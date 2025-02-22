@@ -1,0 +1,25 @@
+- name: Install zsh
+  apt:
+    name: zsh
+    state: present
+
+- name: Change default shell to zsh for the current user
+  user:
+    name: "{{ ansible_user }}"
+    shell: /usr/bin/zsh
+
+- name: Check if NVM is already installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.nvm"
+  register: nvm_check
+  become: no
+
+- name: Install NVM (Node Version Manager)
+  become: no
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+  args:
+    executable: /bin/bash
+  environment:
+    HOME: "{{ ansible_env.HOME }}"
+  when: not nvm_check.stat.exists
