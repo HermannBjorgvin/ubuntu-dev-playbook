@@ -3,5 +3,4 @@
   roles:
     - base
     - shell
-    - docker
-    - spotify
+    - vscode

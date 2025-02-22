@@ -1,9 +1,0 @@
-- name: Ensure snapd is installed
-  apt:
-    name: snapd
-    state: present
-
-- name: Install Spotify snap package
-  command: snap install spotify
-  args:
-    creates: /snap/bin/spotify
