@@ -1,4 +1,4 @@
-- src: morgangraphics.ansible_role_nvm
-  version: ">=2.0.0"
+- src: morgangraphics.nvm
+  version: "v2.0.0"
 - src: viasite-ansible.zsh
-  version: ">=3.7.9"
+  version: "v3.7.9"
