@@ -1,13 +1,14 @@
 - hosts: all
   become: yes
-  vars:
-    zsh_antigen_bundles_extras:
-      - nvm
-    zsh_autosuggestions_bind_key: "^U"
   roles:
     - base
     - geerlingguy.docker
-    - viasite-ansible.zsh
+    - role: viasite-ansible.zsh
+      zsh_antigen_bundles_extras:
+        - nvm
+        - joel-porquet/zsh-dircolors-solarized
+      zsh_autosuggestions_bind_key: "^U"
+      zsh_user: "{{ lookup('env', 'USER') }}"
     - vscode
 - hosts: all
   become: false # NVM should be installed as your regular user
