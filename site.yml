@@ -3,5 +3,4 @@
   roles:
     - base
     - zsh
-    - nvm
     - vscode
