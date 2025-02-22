@@ -1,13 +1,3 @@
-- name: Install zsh
-  apt:
-    name: zsh
-    state: present
-
-- name: Change default shell to zsh for the current user
-  user:
-    name: "{{ ansible_user }}"
-    shell: /usr/bin/zsh
-
 - name: Check if NVM is already installed
   stat:
     path: "{{ ansible_env.HOME }}/.nvm"

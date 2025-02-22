@@ -2,5 +2,6 @@
   become: yes
   roles:
     - base
-    - shell
+    - zsh
+    - nvm
     - vscode
