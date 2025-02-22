@@ -6,6 +6,7 @@
     zsh_autosuggestions_bind_key: "^U"
   roles:
     - base
+    - geerlingguy.docker
     - viasite-ansible.zsh
     - vscode
 - hosts: all

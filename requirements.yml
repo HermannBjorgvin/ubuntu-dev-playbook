@@ -2,3 +2,5 @@
   version: "v2.0.0"
 - src: viasite-ansible.zsh
   version: "v3.7.9"
+- src: geerlingguy.docker
+  version: "7.4.5"
