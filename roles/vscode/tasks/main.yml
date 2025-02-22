@@ -1,27 +1,10 @@
----
-- name: Install dependencies for VS Code repository
+- name: Ensure snapd is installed
   apt:
-    name:
-      - software-properties-common
-      - apt-transport-https
-      - wget
+    name: snapd
     state: present
-
-- name: Add Microsoft GPG key for VS Code
-  apt_key:
-    url: https://packages.microsoft.com/keys/microsoft.asc
-    state: present
-
-- name: Add Visual Studio Code repository
-  apt_repository:
-    repo: "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-    state: present
-
-- name: Update apt cache after adding VS Code repository
-  apt:
     update_cache: yes
 
-- name: Install Visual Studio Code
-  apt:
-    name: code
-    state: present
+- name: Install Visual Studio Code via snap
+  command: snap install --classic code
+  args:
+    creates: /snap/bin/code

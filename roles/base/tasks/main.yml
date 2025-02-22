@@ -3,10 +3,17 @@
     update_cache: yes
     cache_valid_time: 3600
 
-- name: Install build-essential, git, and make
+- name: Install essential developer packages
   apt:
     name:
-      - build-essential
-      - git
-      - make
+      - build-essential # Compilers and libraries for building software
+      - git # Version control
+      - make # Build tool
+      - curl # Data transfer tool
+      - wget # Download utility
+      - htop # Interactive process viewer
+      - unzip # Archive extraction
+      - tree # Directory listing in a tree format
+      - software-properties-common # For managing repositories/PPAs
+      - jq # JSON processor
     state: present
