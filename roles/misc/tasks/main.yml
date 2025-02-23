@@ -1,0 +1,24 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install some misc packages
+  apt:
+    name:
+      - dconf-editor
+      - darktable
+      - dmz-cursor-theme
+      - filezilla
+      - gnome-tweaks
+      - inkscape
+      - mpv
+      - neofetch
+      # - obs-studio
+      # - rstudio
+      - smartmontools
+      - smbclient
+      - sshfs
+      - transmission
+      - vlc
+    state: present

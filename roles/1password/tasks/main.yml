@@ -1,0 +1,65 @@
+- name: "Install 1Password CLI on Debian/Ubuntu"
+  block:
+    - name: "Install 1Password GPG keyring"
+      command: "curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --dearmor > /usr/share/keyrings/1password-archive-keyring.gpg"
+      args:
+        creates: /usr/share/keyrings/1password-archive-keyring.gpg
+      become: yes
+
+    - name: "Add 1Password repository"
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main"
+        state: present
+      become: yes
+
+    - name: "Update apt cache and install 1Password packages"
+      apt:
+        name:
+          - 1password-cli
+          - 1password
+        update_cache: yes
+        state: latest
+      become: yes
+
+- name: "Configure SSH client to use 1Password agent and VerifyHostKeyDNS"
+  block:
+    - name: "Ensure ~/.ssh/ exists"
+      file:
+        path: "/home/{{ non_root_user }}/.ssh"
+        state: directory
+        mode: '0700'
+      become: yes
+      become_user: "{{ non_root_user }}"
+
+    - name: "Ensure non-root user's ~/.ssh/config exists"
+      file:
+        path: "/home/{{ non_root_user }}/.ssh/config"
+        state: touch
+        mode: '0600'
+      become: yes
+      become_user: "{{ non_root_user }}"
+
+    - name: "Create/update ~/.ssh/config"
+      blockinfile:
+        path: "/home/{{ non_root_user }}/.ssh/config"
+        marker: "# {mark} ANSIBLE MANAGED SSH CONFIG"
+        block: |
+          Host *
+              IdentityAgent ~/.1password/agent.sock
+              VerifyHostKeyDNS yes
+      become: yes
+      become_user: "{{ non_root_user }}"
+
+    - name: "Set permissions for ~/.ssh/config"
+      file:
+        path: "/home/{{ non_root_user }}/.ssh/config"
+        mode: '0600'
+      become: yes
+      become_user: "{{ non_root_user }}"
+
+- name: "Configure Git to use custom SSH command"
+  community.general.git_config:
+    scope: global
+    name: core.sshCommand
+    value: "ssh -o IdentityAgent=~/.1password/agent.sock"
+  become: no

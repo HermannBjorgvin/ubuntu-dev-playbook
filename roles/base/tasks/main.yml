@@ -7,8 +7,9 @@
   apt:
     name:
       - build-essential # Compilers and libraries for building software
-      - git # Version control
       - make # Build tool
+      - gnupg
+      - git
       - curl # Data transfer tool
       - wget # Download utility
       - htop # Interactive process viewer
@@ -16,4 +17,5 @@
       - tree # Directory listing in a tree format
       - software-properties-common # For managing repositories/PPAs
       - jq # JSON processor
+      - fonts-powerline
     state: present
