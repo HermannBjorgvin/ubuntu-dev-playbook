@@ -21,3 +21,4 @@
     - role: git_config
       git_user_name: "Hermann Björgvin Haraldsson"
       git_user_email: "hermann@hermann.is"
+    - sicruse.powerline-fonts
