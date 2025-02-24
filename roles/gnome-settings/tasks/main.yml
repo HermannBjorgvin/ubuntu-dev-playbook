@@ -1,0 +1,27 @@
+- name: Ensure user's backgrounds directory exists
+  file:
+    path: "/home/{{ my_user }}/.local/share/backgrounds"
+    state: directory
+    owner: "{{ my_user }}"
+    group: "{{ my_user }}"
+    mode: "0755"
+
+- name: Copy background image to user's backgrounds directory
+  copy:
+    src: files/cryptozoology museum portland.jpg
+    dest: "/home/{{ my_user }}/.local/share/backgrounds/background.jpg"
+    owner: "{{ my_user }}"
+    group: "{{ my_user }}"
+    mode: "0644"
+
+- name: Set GNOME background for light theme using gsettings
+  command: >
+    gsettings set org.gnome.desktop.background picture-uri 'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'
+  become: yes
+  become_user: "{{ my_user }}"
+
+- name: Set GNOME background for dark theme using gsettings
+  command: >
+    gsettings set org.gnome.desktop.background picture-uri-dark 'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'
+  become: yes
+  become_user: "{{ my_user }}"

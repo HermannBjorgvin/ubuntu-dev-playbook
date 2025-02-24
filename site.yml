@@ -16,9 +16,20 @@
 - hosts: all
   become: false # NVM should be installed as your regular user
   roles:
-    - role: morgangraphics.ansible_role_nvm
+    - role: morgangraphics.nvm
       nvm_user: "{{ lookup('env', 'USER') }}"
     - role: git_config
       git_user_name: "Hermann Björgvin Haraldsson"
       git_user_email: "hermann@hermann.is"
-    - sicruse.powerline-fonts
+    - role: tvieira.powerline-fonts
+      all_users:
+        - user: hermann
+          homedir: /home/hermann
+      all_fonts:
+        - AnonymousPro
+        - FiraMono
+        - Inconsolata
+        - DejaVuSansMono
+        - SourceCodePro
+    - role: gnome-settings
+      my_user: "{{ lookup('env', 'USER') }}"

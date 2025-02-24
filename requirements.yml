@@ -4,5 +4,5 @@
   version: "v3.7.9"
 - src: geerlingguy.docker
   version: "7.4.5"
-- src: sicruse.powerline-fonts
-  version: "v1.2.0"
+- src: tvieira.powerline-fonts
+  version: "v1.0"
