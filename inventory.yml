@@ -1,0 +1,10 @@
+all:
+  children:
+    laptop:
+      hosts:
+        hermann-ThinkPad-T14-Gen-2i:
+          ansible_connection: local
+    desktop:
+      hosts:
+        workstation:
+          ansible_connection: local

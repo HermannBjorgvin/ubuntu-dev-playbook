@@ -8,3 +8,8 @@
   command: snap install --classic code
   args:
     creates: /snap/bin/code
+
+- name: Install Visual Studio Code Insiders  via snap
+  command: snap install --classic code-insiders
+  args:
+    creates: /snap/bin/code-insiders

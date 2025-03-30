@@ -1,18 +1,21 @@
 - name: "Install 1Password CLI on Debian/Ubuntu"
   block:
-    - name: "Download 1Password GPG key"
-      command: "curl -sS https://downloads.1password.com/linux/keys/1password.asc -o /tmp/1password.asc"
-      become: yes
+    - name: Download 1Password GPG key
+      ansible.builtin.get_url:
+        url: "https://downloads.1password.com/linux/keys/1password.asc"
+        dest: "/usr/share/keyrings/1password.asc"
+        mode: '0644'
 
-    - name: "Convert GPG key to keyring"
-      command: "gpg --dearmor -o /usr/share/keyrings/1password-archive-keyring.gpg /tmp/1password.asc"
-      become: yes
+    - name: Convert GPG key to keyring (dearmor)
+      ansible.builtin.command: >
+        gpg --dearmor -o /usr/share/keyrings/1password-archive-keyring.gpg /usr/share/keyrings/1password.asc
+      args:
+        creates: "/usr/share/keyrings/1password-archive-keyring.gpg"
 
-    - name: "Remove temporary GPG key"
-      file:
-        path: "/tmp/1password.asc"
+    - name: Remove original GPG key file
+      ansible.builtin.file:
+        path: "/usr/share/keyrings/1password.asc"
         state: absent
-      become: yes
 
     - name: "Add 1Password repository"
       apt_repository:

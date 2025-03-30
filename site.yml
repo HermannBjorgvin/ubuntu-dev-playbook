@@ -12,15 +12,32 @@
     - vscode
     - role: 1password
       non_root_user: "{{ lookup('env', 'USER') }}"
-    - misc
+    - common
+    - inkscape
+    - mpv
+    - filezilla
+
 - hosts: all
-  become: false # NVM should be installed as your regular user
+  become: no
   roles:
     - role: morgangraphics.nvm
       nvm_user: "{{ lookup('env', 'USER') }}"
     - role: git_config
       git_user_name: "Hermann Björgvin Haraldsson"
       git_user_email: "hermann@hermann.is"
+    - role: gnome-settings
+      my_user: "{{ lookup('env', 'USER') }}"
+
+- hosts: desktop
+  become: yes
+  roles:
+    - darktable
+    - transmission
+    - vlc
+
+- hosts: laptop
+  become: no
+  roles:
     - role: tvieira.powerline-fonts
       all_users:
         - user: hermann
@@ -31,5 +48,3 @@
         - Inconsolata
         - DejaVuSansMono
         - SourceCodePro
-    - role: gnome-settings
-      my_user: "{{ lookup('env', 'USER') }}"

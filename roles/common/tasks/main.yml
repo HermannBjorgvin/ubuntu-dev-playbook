@@ -3,22 +3,14 @@
     update_cache: yes
     cache_valid_time: 3600
 
-- name: Install some misc packages
+- name: Install some common packages
   apt:
     name:
       - dconf-editor
-      - darktable
-      - dmz-cursor-theme
-      - filezilla
       - gnome-tweaks
-      - inkscape
-      - mpv
-      - neofetch
-      # - obs-studio
-      # - rstudio
+      - dmz-cursor-theme
       - smartmontools
       - smbclient
       - sshfs
-      - transmission
-      - vlc
+      - neofetch
     state: present
