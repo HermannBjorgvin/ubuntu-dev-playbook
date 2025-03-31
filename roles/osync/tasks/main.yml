@@ -1,0 +1,78 @@
+- name: Ensure dependencies
+  apt:
+    name: [git, rsync, bash]
+    state: present
+
+- name: Clone osync stable branch
+  git:
+    repo: https://github.com/deajan/osync.git
+    dest: /tmp/osync
+    version: stable
+    force: yes
+
+- name: Run osync install.sh and auto-decline analytics prompt
+  expect:
+    command: bash install.sh
+    chdir: /tmp/osync
+    responses:
+      'Allow \[Y/n\]': 'n'
+  become: yes
+
+- name: Ensure config dir exists
+  file:
+    path: "{{ ansible_user_dir }}/.config/osync"
+    state: directory
+    mode: '0755'
+
+- name: Deploy exclude list
+  template:
+    src: exclude.list.j2
+    dest: "{{ ansible_user_dir }}/.config/osync/exclude.list"
+    mode: '0644'
+
+- name: Deploy osync config
+  template:
+    src: osync.conf.j2
+    dest: "{{ ansible_user_dir }}/.config/osync/sync.conf"
+    mode: '0644'
+
+- name: Create systemd service for osync
+  copy:
+    dest: /etc/systemd/system/osync-sync.service
+    content: |
+      [Unit]
+      Description=Osync two-way sync
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/local/bin/osync.sh "{{ ansible_user_dir }}/.config/osync/sync.conf" --silent
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: '0644'
+
+- name: Create systemd timer for osync
+  copy:
+    dest: /etc/systemd/system/osync-sync.timer
+    content: |
+      [Unit]
+      Description=Run osync every 15 minutes
+
+      [Timer]
+      OnBootSec=5min
+      OnUnitActiveSec=15min
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    mode: '0644'
+
+- name: Enable and start timer
+  systemd:
+    name: osync-sync.timer
+    enabled: yes
+    state: started
+    daemon_reload: yes
+
+- debug:
+    var: osync_install.stdout_lines
