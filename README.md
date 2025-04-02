@@ -42,6 +42,9 @@ I am working on removing as many manual steps as possible to the installation an
 - Login to 1Password desktop app by scanning QR Code
 - Add 1Password addon to Firefox and login w/ QR Code
 
+- Download VPN conf file from Unifi for Home VPN
+- Rename VPN file to `Home.conf`, go to network settings to add VPN, pick import from file
+
 ## Choices left to make
 
 ### Font for terminal and programming:

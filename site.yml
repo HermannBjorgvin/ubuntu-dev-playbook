@@ -36,6 +36,13 @@
     - vlc
 
 - hosts: laptop
+  become: yes
+  roles:
+    - role: home-vpn-route
+      route_ip: "192.168.2.145"
+      interface_name: "Home"
+
+- hosts: laptop
   become: no
   roles:
     - role: tvieira.powerline-fonts

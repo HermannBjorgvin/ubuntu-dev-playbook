@@ -1,0 +1,11 @@
+#!/bin/bash
+if [ "$CONNECTION_ID" = "{{ interface_name }}" ]; then
+  case "$2" in
+    up)
+      ip route add {{ route_ip }}/32 dev "$1"
+      ;;
+    down)
+      ip route del {{ route_ip }}/32 dev "$1"
+      ;;
+  esac
+fi

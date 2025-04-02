@@ -1,0 +1,19 @@
+- name: Modify VPN connection to never use as default route
+  command: nmcli connection modify "{{ interface_name }}" ipv4.never-default yes
+  become: yes
+
+- name: Set VPN connection to autoconnect
+  command: nmcli connection modify "{{ interface_name }}" connection.autoconnect yes
+  become: yes
+
+- name: Bring up VPN connection immediately
+  command: nmcli connection up id "{{ interface_name }}"
+  become: yes
+  ignore_errors: yes
+
+- name: Deploy VPN route dispatcher script
+  template:
+    src: dispatcher-script.j2
+    dest: "/etc/NetworkManager/dispatcher.d/99-{{ interface_name | lower }}-vpn-route"
+    mode: '0755'
+  become: yes
