@@ -74,3 +74,11 @@
     name: core.sshCommand
     value: "ssh -o IdentityAgent=~/.1password/agent.sock"
   become: no
+
+- name: Create 1Password startup desktop entry
+  copy:
+    src: 1password.desktop
+    dest: "/home/{{ non_root_user }}/.config/autostart/1password.desktop"
+    mode: '0644'
+  become: yes
+  become_user: "{{ non_root_user }}"
