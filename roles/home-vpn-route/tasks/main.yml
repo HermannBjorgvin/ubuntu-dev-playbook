@@ -17,3 +17,11 @@
     dest: "/etc/NetworkManager/dispatcher.d/99-{{ interface_name | lower }}-vpn-route"
     mode: '0755'
   become: yes
+
+- name: Update /etc/hosts to map "ssh.earth" to {{ route_ip }}
+  become: yes
+  lineinfile:
+    path: /etc/hosts
+    regexp: '.*\bssh\.earth\b.*'
+    line: "{{ route_ip }} ssh.earth"
+    state: present
