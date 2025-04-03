@@ -1,0 +1,18 @@
+- name: Add NordVPN GPG key
+  apt_key:
+    url: "https://repo.nordvpn.com/gpg/nordvpn_public.asc"
+    state: present
+
+- name: Add NordVPN repository
+  apt_repository:
+    repo: "deb https://repo.nordvpn.com/deb/nordvpn/debian stable main"
+    state: present
+    filename: nordvpn
+
+- name: "Update apt cache and install nordvpn"
+  apt:
+    name:
+      - nordvpn
+    update_cache: yes
+    state: latest
+  become: yes
