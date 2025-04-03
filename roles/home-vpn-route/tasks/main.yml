@@ -1,14 +1,37 @@
-- name: Modify VPN connection to never use as default route
-  command: nmcli connection modify "{{ interface_name }}" ipv4.never-default yes
+- name: Ensure VPN connection never uses default route
   become: yes
+  shell: |
+    current=$(nmcli -g ipv4.never-default connection show "{{ interface_name }}")
+    if [ "$current" != "yes" ]; then
+      nmcli connection modify "{{ interface_name }}" ipv4.never-default yes
+    else
+      echo "Already set"
+    fi
+  register: never_default
+  changed_when: "'Already set' not in never_default.stdout"
 
-- name: Set VPN connection to autoconnect
-  command: nmcli connection modify "{{ interface_name }}" connection.autoconnect yes
+- name: Ensure VPN connection is set to autoconnect
   become: yes
+  shell: |
+    current=$(nmcli -g connection.autoconnect connection show "{{ interface_name }}")
+    if [ "$current" != "yes" ]; then
+      nmcli connection modify "{{ interface_name }}" connection.autoconnect yes
+    else
+      echo "Already set"
+    fi
+  register: autoconnect
+  changed_when: "'Already set' not in autoconnect.stdout"
 
-- name: Bring up VPN connection immediately
-  command: nmcli connection up id "{{ interface_name }}"
+- name: Bring up VPN connection immediately if not active
   become: yes
+  shell: |
+    if ! nmcli connection show --active | grep -q "{{ interface_name }}"; then
+      nmcli connection up id "{{ interface_name }}"
+    else
+      echo "Already up"
+    fi
+  register: vpn_up
+  changed_when: "'Already up' not in vpn_up.stdout"
   ignore_errors: yes
 
 - name: Deploy VPN route dispatcher script
