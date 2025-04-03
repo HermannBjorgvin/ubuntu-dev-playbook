@@ -45,6 +45,9 @@ I am working on removing as many manual steps as possible to the installation an
 - Download VPN conf file from Unifi for Home VPN
 - Rename VPN file to `Home.conf`, go to network settings to add VPN, pick import from file
 
+- Run `nordvpn login` to login to nordvpn
+- Optionally run `nordvpn autoconnect enabled` to autoconnect to opitmal server or `nordvpn set autoconnect enabled Iceland` for the Icelandic server.
+
 ## Choices left to make
 
 ### Font for terminal and programming:
