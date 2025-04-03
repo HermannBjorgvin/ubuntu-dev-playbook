@@ -8,6 +8,7 @@
     name:
       - dconf-editor
       - gnome-tweaks
+      - gnome-shell-extension-manager
       - dmz-cursor-theme
       - smartmontools
       - smbclient

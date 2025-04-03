@@ -25,3 +25,8 @@
     gsettings set org.gnome.desktop.background picture-uri-dark 'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'
   become: yes
   become_user: "{{ my_user }}"
+
+- name: Disable GNOME extension for Ubuntu Desktop Icons
+  command: gnome-extensions disable ding@rastersoft.com
+  become: yes
+  become_user: "{{ my_user }}"

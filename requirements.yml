@@ -6,3 +6,5 @@
   version: "7.4.5"
 - src: tvieira.powerline-fonts
   version: "v1.0"
+- src: petermosmans.customize-gnome
+  version: "0.2.12"

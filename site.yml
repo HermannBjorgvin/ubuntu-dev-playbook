@@ -18,6 +18,24 @@
     - filezilla
 
 - hosts: all
+  become: yes
+  become_method: sudo
+  roles: 
+    - role: petermosmans.customize-gnome
+  vars:
+    gnome_dconf:
+      - key: /org/gnome/desktop/background/show-desktop-icons
+        value: "false"
+      - key: /org/gnome/shell/favorite-apps
+        value: "['firefox_firefox.desktop', 'code_code.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Settings.desktop']"
+    gnome_extensions:
+      # https://extensions.gnome.org/extension/7174/nordvpn-quick-toggle/
+      - id: 7174
+        enable: yes
+    gnome_user: "{{ lookup('env', 'USER') }}"
+    customize_gnome__skip_restart_gnome_shell: true
+
+- hosts: all
   become: no
   roles:
     - role: morgangraphics.nvm
