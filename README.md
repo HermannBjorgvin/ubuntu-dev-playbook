@@ -11,6 +11,8 @@ I am working on removing as many manual steps as possible to the installation an
 - Dotfiles setup for sharing settings between machines
 - Backup and share files between machines (Syncthing or similar)
 
+Main goal is to eventually format my own computer in front of someone and restore it in ~15 minutes to for bragging rights.
+
 ## Investigate later:
 
 - Backup/file sharing: Investigate different sites, i.e. work/personal to not sync certain folders
