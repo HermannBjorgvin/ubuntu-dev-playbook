@@ -9,3 +9,9 @@
     scope: global
     name: user.email
     value: "{{ git_user_email }}"
+
+- name: Set Git global pull.rebase
+  community.general.git_config:
+    scope: global
+    name: pull.rebase
+    value: true
