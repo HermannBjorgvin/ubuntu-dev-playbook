@@ -14,19 +14,28 @@
     group: "{{ my_user }}"
     mode: "0644"
 
-- name: Set GNOME background for light theme using gsettings
-  command: >
-    gsettings set org.gnome.desktop.background picture-uri 'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'
+- name: Set GNOME background for light theme using dconf (idempotent)
+  community.general.dconf:
+    key: /org/gnome/desktop/background/picture-uri
+    value: "'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'"
   become: yes
   become_user: "{{ my_user }}"
 
-- name: Set GNOME background for dark theme using gsettings
-  command: >
-    gsettings set org.gnome.desktop.background picture-uri-dark 'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'
+- name: Set GNOME background for dark theme using dconf (idempotent)
+  community.general.dconf:
+    key: /org/gnome/desktop/background/picture-uri-dark
+    value: "'file:///home/{{ my_user }}/.local/share/backgrounds/background.jpg'"
   become: yes
   become_user: "{{ my_user }}"
 
-- name: Disable GNOME extension for Ubuntu Desktop Icons
+- name: Check if Ubuntu Desktop Icons extension is enabled
+  command: gnome-extensions info ding@rastersoft.com
+  register: ubuntu_ext_info
+  changed_when: false
+  failed_when: false
+  become: no
+
+- name: Disable GNOME extension for Ubuntu Desktop Icons if enabled
   command: gnome-extensions disable ding@rastersoft.com
-  become: yes
-  become_user: "{{ my_user }}"
+  when: "'State: ENABLED' in ubuntu_ext_info.stdout"
+  become: no
