@@ -8,3 +8,7 @@ all:
       hosts:
         workstation:
           ansible_connection: local
+    marel:
+      hosts:
+        doppa:
+          ansible_connection: local

@@ -8,8 +8,28 @@
   command: snap install --classic code
   args:
     creates: /snap/bin/code
+  when: not vscode_install_insiders | bool
 
-- name: Install Visual Studio Code Insiders  via snap
+- name: Install Visual Studio Code Insiders via snap
   command: snap install --classic code-insiders
   args:
     creates: /snap/bin/code-insiders
+  when: vscode_install_insiders | bool
+
+- name: Set VS Code command based on installation choice
+  set_fact:
+    vscode_command: "{{ 'code-insiders' if vscode_install_insiders | bool else 'code' }}"
+
+- name: Get list of installed VS Code extensions
+  become: yes
+  become_user: "{{ non_root_user }}"
+  command: "{{ vscode_command }} --list-extensions"
+  register: installed_extensions
+  changed_when: false
+
+- name: Install missing VS Code extensions
+  become: yes
+  become_user: "{{ non_root_user }}"
+  command: "{{ vscode_command }} --install-extension {{ item }}"
+  loop: "{{ vscode_extensions }}"
+  when: item not in installed_extensions.stdout_lines

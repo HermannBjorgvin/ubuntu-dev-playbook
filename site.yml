@@ -20,7 +20,7 @@
 - hosts: all
   become: yes
   become_method: sudo
-  roles: 
+  roles:
     - role: petermosmans.customize-gnome
   vars:
     gnome_dconf:

@@ -1,0 +1,34 @@
+- hosts: marel
+  become: yes
+  roles:
+    - role: vscode
+      non_root_user: "{{ lookup('env', 'USER') }}"
+      vscode_install_insiders: true
+      vscode_extensions:
+        - ms-azuretools.vscode-docker
+        - angular.ng-template
+        - tomwhite007.rename-angular-component
+        - alexkrechik.cucumberautocomplete
+        - orta.vscode-jest
+        - firsttris.vscode-jest-runner
+        - ms-playwright.playwright
+        - nrwl.angular-console
+        - orsenkucher.vscode-graphql
+        - ms-vscode.sublime-keybindings
+        - ms-vsliveshare.vsliveshare
+        - ms-vscode-remote.remote-containers
+        - waderyan.gitblame
+        - gruntfuggly.todo-tree
+        - github.copilot
+        - github.copilot-chat
+        - github.vscode-github-actions
+        - docker.docker
+        - unifiedjs.vscode-mdx
+        - mrmlnc.vscode-scss
+        - golang.go
+        - dbaeumer.vscode-eslint
+        - esbenp.prettier-vscode
+        - editorconfig.editorconfig
+        - adpyke.codesnap
+        - gwicksted.paste-escaped
+        - ms-python.python
