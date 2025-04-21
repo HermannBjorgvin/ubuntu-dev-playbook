@@ -74,7 +74,3 @@
         - Inconsolata
         - DejaVuSansMono
         - SourceCodePro
-#    - role: osync
-#      become: yes
-#      sync_target_host: serverIP
-#      sync_target_user: hermann
