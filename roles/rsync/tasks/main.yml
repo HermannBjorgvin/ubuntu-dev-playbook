@@ -1,0 +1,38 @@
+- name: ensure /usr/local/bin exists
+  file:
+    path: /usr/local/bin
+    state: directory
+
+- name: optionally restore from remote backup
+  args:
+    executable: /bin/bash
+  shell: |
+    set -euo pipefail
+    SSH_OPTS="-i {{ ssh_key_path }} -o IdentitiesOnly=yes -o IdentityAgent=none -o BatchMode=yes"
+    for d in {{ backup_dirs }};
+    do
+      rsync -av --update -e "ssh $SSH_OPTS" \
+        {{ backup_dest_user }}@{{ backup_dest_host }}:{{ backup_dest_path }}/"$d"/ \
+        {{ backup_src }}/"$d"/
+    done
+  when: restore_on_first_run
+  become: yes
+
+
+- name: deploy rsync-backup.sh
+  template:
+    src: rsync-backup.sh.j2
+    dest: /usr/local/bin/rsync-backup.sh
+    mode: '0755'
+  become: yes
+
+- name: schedule daily cron job
+  cron:
+    name: "rsync {{ inventory_hostname }} → {{ backup_dest_host }}"
+    hour: "{{ cron_hour }}"
+    minute: "{{ cron_minute }}"
+    job: "/usr/local/bin/rsync-backup.sh"
+  when: schedule_cron
+  become: yes
+  become_user: "{{ non_root_user }}"
+  when: non_root_user is defined

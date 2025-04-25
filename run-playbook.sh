@@ -1,3 +1,4 @@
 #!/bin/bash
-ansible-galaxy install -r requirements.yml
+ansible-galaxy collection install -r collections/requirements.yml
+ansible-galaxy install -r roles/requirements.yml
 ansible-playbook -i inventory.yml site.yml "$@"

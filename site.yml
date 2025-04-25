@@ -45,6 +45,8 @@
       git_user_email: "hermann@hermann.is"
     - role: gnome-settings
       my_user: "{{ lookup('env', 'USER') }}"
+    - role: rsync
+      non_root_user: "{{ lookup('env', 'USER') }}"
 
 - hosts: desktop
   become: yes
