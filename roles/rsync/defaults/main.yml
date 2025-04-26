@@ -1,18 +1,8 @@
-backup_dirs:
-  - Documents
-  - Music
-  - Downloads
-  - Pictures
-  - Videos
-
-backup_src: "{{ ansible_env.HOME }}"
 backup_dest_user: backups
-backup_dest_host: ssh.earth
-backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
+backup_dest_host: localhost
+backup_dest_path: "/srv/rsync/{{ inventory_hostname }}"
 
 ssh_key_path: "{{ ansible_env.HOME }}/.ssh/rsync_ed25519"
-exclude_patterns:
-  - '*/node_modules/*'
   
 schedule_cron: true
 cron_hour: '23'

@@ -47,6 +47,11 @@
       my_user: "{{ lookup('env', 'USER') }}"
     - role: rsync
       non_root_user: "{{ lookup('env', 'USER') }}"
+      backup_dest_user: backups
+      backup_dest_host: ssh.earth
+      backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
+      cron_hour: '23'
+      cron_minute: '30'
 
 - hosts: desktop
   become: yes

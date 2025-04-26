@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SRC="{{ backup_src }}"
+SRC="{{ ansible_env.HOME }}"
 DEST="{{ backup_dest_user }}@{{ backup_dest_host }}:{{ backup_dest_path }}"
 SSH_OPTS="-i {{ ssh_key_path }} -o IdentitiesOnly=yes -o IdentityAgent=none -o BatchMode=yes"
 
-RSYNC_OPTS=( -av --delete --rsync-path="mkdir -p {{ backup_dest_path }} && rsync" {% for pat in exclude_patterns %} --exclude '{{ pat }}' {% endfor %} -e "ssh $SSH_OPTS" )
+RSYNC_OPTS=( -av --delete --rsync-path="mkdir -p {{ backup_dest_path }} && rsync" --exclude-from="$SRC/.rsync-ignore" -e "ssh $SSH_OPTS" )
 
-{% for d in backup_dirs %}
-rsync "${RSYNC_OPTS[@]}" "$SRC/{{ d }}/" "$DEST/{{ d }}/"
-{% endfor %}
+rsync "${RSYNC_OPTS[@]}" "$SRC/" "$DEST/"

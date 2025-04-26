@@ -9,15 +9,13 @@
   shell: |
     set -euo pipefail
     SSH_OPTS="-i {{ ssh_key_path }} -o IdentitiesOnly=yes -o IdentityAgent=none -o BatchMode=yes"
-    for d in {{ backup_dirs }};
-    do
-      rsync -av --update -e "ssh $SSH_OPTS" \
-        {{ backup_dest_user }}@{{ backup_dest_host }}:{{ backup_dest_path }}/"$d"/ \
-        {{ backup_src }}/"$d"/
-    done
+
+    rsync -av --update --exclude-from="{{ ansible_env.HOME }}/.rsync-ignore" -e "ssh $SSH_OPTS" \
+        {{ backup_dest_user }}@{{ backup_dest_host }}:{{ backup_dest_path }}/ \
+        {{ ansible_env.HOME }}/
   when: restore_on_first_run
   become: yes
-
+  become_user: "{{ non_root_user }}"
 
 - name: deploy rsync-backup.sh
   template:
