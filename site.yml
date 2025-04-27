@@ -110,11 +110,11 @@
   roles:
     - role: morgangraphics.nvm
       nvm_user: "{{ lookup('env', 'USER') }}"
-    - role: git_config
-      git_user_name: "Hermann Björgvin Haraldsson"
-      git_user_email: "hermann@hermann.is"
     - role: gnome-settings
       my_user: "{{ lookup('env', 'USER') }}"
+    - role: dotfiles
+      non_root_user: "{{ lookup('env', 'USER') }}"
+      dotfiles_repo: "git@github.com:HermannBjorgvin/dotfiles.git"
 
 - hosts: laptop
   become: yes
@@ -142,5 +142,5 @@
       backup_dest_user: backups
       backup_dest_host: ssh.earth
       backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
-      cron_hour: '23'
-      cron_minute: '30'
+      cron_hour: "23"
+      cron_minute: "30"
