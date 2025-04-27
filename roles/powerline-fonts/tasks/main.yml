@@ -1,0 +1,19 @@
+- name: Clone Powerline fonts repository
+  git:
+    repo: https://github.com/powerline/fonts.git
+    dest: /tmp/fonts
+    depth: 1
+  register: clone_result
+
+- name: Install Powerline fonts
+  shell: |
+    ./install.sh
+  args:
+    chdir: /tmp/fonts
+  when: clone_result.changed
+
+- name: Clean up Powerline fonts repository
+  file:
+    path: /tmp/fonts
+    state: absent
+  when: clone_result.changed

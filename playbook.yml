@@ -15,9 +15,6 @@
           - unzip
           - jq
 
-          # Powerline fonts
-          - fonts-powerline
-
           # Desktop stuff
           - dconf-editor
           - gnome-tweaks
@@ -108,13 +105,22 @@
 - hosts: all
   become: no
   roles:
+    - role: powerline-fonts
     - role: morgangraphics.nvm
       nvm_user: "{{ lookup('env', 'USER') }}"
     - role: gnome-settings
       my_user: "{{ lookup('env', 'USER') }}"
-    - role: dotfiles
-      non_root_user: "{{ lookup('env', 'USER') }}"
+    - role: geerlingguy.dotfiles
       dotfiles_repo: "git@github.com:HermannBjorgvin/dotfiles.git"
+      dotfiles_repo_version: master
+      dotfiles_repo_accept_hostkey: false
+      dotfiles_repo_local_destination: "~/.dotfiles"
+      dotfiles_home: "~"
+      dotfiles_files:
+        - .config/Code - Insiders/User/keybindings.json
+        - .config/Code - Insiders/User/settings.json
+        - .config/Code/User/settings.json
+        - .gitconfig
 
 - hosts: laptop
   become: yes
@@ -127,16 +133,6 @@
 - hosts: laptop
   become: no
   roles:
-    - role: tvieira.powerline-fonts
-      all_users:
-        - user: hermann
-          homedir: /home/hermann
-      all_fonts:
-        - AnonymousPro
-        - FiraMono
-        - Inconsolata
-        - DejaVuSansMono
-        - SourceCodePro
     - role: rsync
       non_root_user: "{{ lookup('env', 'USER') }}"
       backup_dest_user: backups

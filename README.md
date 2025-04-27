@@ -29,7 +29,7 @@ You will probably want to skip this step and disable the `home-vpn-route` role w
 
 ### Running the playbook
 
-- Make changes to the `site.yml` playbook to fit your own preferences or fork this repo and modify it
+- Make changes to the `playbook.yml` playbook to fit your own preferences or fork this repo and modify it
 - Run ansible playbook via `./run-playbook.sh -K` script
 
 ### Post playbook
@@ -44,6 +44,7 @@ You need to go through some manual steps that have not been automated or are not
 - Optionally run `nordvpn autoconnect enabled` to autoconnect to opitmal server or `nordvpn set autoconnect enabled Iceland` for the Icelandic server.
 
 ## Goals
+
 Below are some of my goals and thoughts on this project, **feel free to totally ignore them.**
 
 - Be able to format my computer and restore it in ~15 minutes.
@@ -58,20 +59,23 @@ Below are some of my goals and thoughts on this project, **feel free to totally 
 - Set up Syncthing for `/home/$USER/shared`
 - Split playbook into a few parts to make running new additions easier
 - Create a playbook for my homelab [server configuration](./SERVER.md) to set up automatic ZFS snapshots and [MOTD](https://github.com/HermannBjorgvin/MOTD)
- 
+
 ## Choices left to make:
 
 #### Monospaced font
+
 I've been sort of reviewing my monospace font choices and I seem to have landed on Adobe's Source Code font for monospaced fonts but have not yet configured all my applications and gnome terminal to use it.
 
 Also the powerline font download role is not idempotent, I think downloading the files and tracking them in this repository makes most sense for me.
 
 The top contenders are:
+
 1. Source Code Pro
 2. DejaVuSansMono
 3. Inconsolata
 
 #### Backup solution
+
 I have almost settled on a backup solution involving RSync for certain folders in the `/home/$USER` directory and in the future adding a single Syncthing folder for `/home/$USER/shared` to make sharing files between machines easier.
 
 Syncthing could be used for the entire home directory but I though RSync via SSH to my homelab server was a bit more straight forward and I did not have enough time to research hardening Syncthing and restoring the TLS certs needed for authentication.
@@ -79,4 +83,3 @@ Syncthing could be used for the entire home directory but I though RSync via SSH
 I think creating a systemd service for RSync backups makes most sense for me, there is an edge case in this playbook where if you run the ansible role tasks which restore the backups from the source if there is a problem then the next time you run the automated "push" using the `--delete` flag you might overwrite your server backups.
 
 A systemd service which can check network status as well as tracking the time between last backups makes most sense (possibly even use inotify to automatically backup on file changes).
-
