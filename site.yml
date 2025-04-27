@@ -1,7 +1,51 @@
 - hosts: all
   become: yes
+  tasks:
+    - name: Install apt packages
+      apt:
+        name:
+          # Common stuff
+          - build-essential
+          - software-properties-common
+          - make
+          - git
+          - curl
+          - wget
+          - gnupg
+          - unzip
+          - jq
+
+          # Powerline fonts
+          - fonts-powerline
+
+          # Desktop stuff
+          - dconf-editor
+          - gnome-tweaks
+          - gnome-shell-extension-manager
+          - dmz-cursor-theme
+
+          # Terminal stuff
+          - tree
+          - htop
+          - neofetch
+
+          # Network drive stuff
+          - smbclient
+          - sshfs
+
+          # Useful apps
+          - smartmontools
+          - darktable
+          - filezilla
+          - inkscape
+          - mpv
+          - vlc
+          - gimp
+          - transmission
+        state: present
+        update_cache: yes
+        cache_valid_time: 3600
   roles:
-    - base
     - geerlingguy.docker
     - role: viasite-ansible.zsh
       zsh_antigen_bundles_extras:
@@ -9,13 +53,39 @@
         - joel-porquet/zsh-dircolors-solarized
       zsh_autosuggestions_bind_key: "^U"
       zsh_user: "{{ lookup('env', 'USER') }}"
-    - vscode
+    - role: vscode
+      non_root_user: "{{ lookup('env', 'USER') }}"
+      vscode_install_insiders: true
+      vscode_extensions:
+        - ms-azuretools.vscode-docker
+        - angular.ng-template
+        - tomwhite007.rename-angular-component
+        - alexkrechik.cucumberautocomplete
+        - orta.vscode-jest
+        - firsttris.vscode-jest-runner
+        - ms-playwright.playwright
+        - nrwl.angular-console
+        - orsenkucher.vscode-graphql
+        - ms-vscode.sublime-keybindings
+        - ms-vsliveshare.vsliveshare
+        - ms-vscode-remote.remote-containers
+        - waderyan.gitblame
+        - gruntfuggly.todo-tree
+        - github.copilot
+        - github.copilot-chat
+        - github.vscode-github-actions
+        - docker.docker
+        - unifiedjs.vscode-mdx
+        - mrmlnc.vscode-scss
+        - golang.go
+        - dbaeumer.vscode-eslint
+        - esbenp.prettier-vscode
+        - editorconfig.editorconfig
+        - adpyke.codesnap
+        - gwicksted.paste-escaped
+        - ms-python.python
     - role: 1password
       non_root_user: "{{ lookup('env', 'USER') }}"
-    - common
-    - inkscape
-    - mpv
-    - filezilla
 
 - hosts: all
   become: yes
@@ -45,20 +115,6 @@
       git_user_email: "hermann@hermann.is"
     - role: gnome-settings
       my_user: "{{ lookup('env', 'USER') }}"
-    - role: rsync
-      non_root_user: "{{ lookup('env', 'USER') }}"
-      backup_dest_user: backups
-      backup_dest_host: ssh.earth
-      backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
-      cron_hour: '23'
-      cron_minute: '30'
-
-- hosts: desktop
-  become: yes
-  roles:
-    - darktable
-    - transmission
-    - vlc
 
 - hosts: laptop
   become: yes
@@ -81,3 +137,10 @@
         - Inconsolata
         - DejaVuSansMono
         - SourceCodePro
+    - role: rsync
+      non_root_user: "{{ lookup('env', 'USER') }}"
+      backup_dest_user: backups
+      backup_dest_host: ssh.earth
+      backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
+      cron_hour: '23'
+      cron_minute: '30'
