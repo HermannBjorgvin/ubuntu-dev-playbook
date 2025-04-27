@@ -29,6 +29,16 @@ You will probably want to skip this step and disable the `home-vpn-route` role w
 
 ### Running the playbook
 
+I have a few computers that I want to install different stuff on in theory, mostly it's that I have different VS Code plugins on my work computer. But to that end I have an inventory file that has three different groups of hosts, `laptop`, `desktop`, and `work`.
+
+You can also go the same route as Jeff Geerling and use a simplified inventory file:
+
+```yaml
+[all]
+127.0.0.1  ansible_connection=local
+```
+
+- Make changes to the `inventory.yml` file if you need to.
 - Make changes to the `playbook.yml` playbook to fit your own preferences or fork this repo and modify it
 - Run ansible playbook via `./run-playbook.sh -K` script
 
