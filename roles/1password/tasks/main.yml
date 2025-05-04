@@ -29,7 +29,7 @@
       file:
         path: "/home/{{ non_root_user }}/.ssh"
         state: directory
-        mode: '0700'
+        mode: "0700"
       become: yes
       become_user: "{{ non_root_user }}"
 
@@ -47,7 +47,7 @@
     - name: "Set permissions for ~/.ssh/config"
       file:
         path: "/home/{{ non_root_user }}/.ssh/config"
-        mode: '0600'
+        mode: "0600"
       become: yes
       become_user: "{{ non_root_user }}"
 
@@ -62,6 +62,11 @@
   copy:
     src: 1password.desktop
     dest: "/home/{{ non_root_user }}/.config/autostart/1password.desktop"
-    mode: '0644'
+    mode: "0644"
   become: yes
   become_user: "{{ non_root_user }}"
+
+- name: Prompt user to enable SSH Agent in 1Password
+  pause:
+    prompt: |
+      Please login to 1Password and enable "Use the SSH Agent" under Settings->Developer before continuing. Press enter to continue.

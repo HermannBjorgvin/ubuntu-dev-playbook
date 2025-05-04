@@ -1,18 +1,43 @@
+- name: Check if SSH key exists
+  stat:
+    path: "{{ ssh_key_path }}"
+  register: ssh_key_status
+
+- name: Prompt user to add SSH key
+  pause:
+    prompt: > 
+      You need an SSH key for your rsync user at {{ ssh_key_path }} or you need to disable rsync backups. You can add this key now and press enter to continue."
+  when: not ssh_key_status.stat.exists
+  delegate_to: localhost
+
+- name: Re-check if SSH key exists after prompt
+  stat:
+    path: "{{ ssh_key_path }}"
+  register: ssh_key_status
+
+- name: Fail if SSH key still does not exist
+  fail:
+    msg: "The SSH key at {{ ssh_key_path }} is required for rsync backups."
+  when: not ssh_key_status.stat.exists
+
 - name: Update apt cache
   apt:
     update_cache: yes
     cache_valid_time: 3600
+  when: ssh_key_status.stat.exists
 
 - name: Install rsync
   apt:
     name:
       - rsync
     state: present
+  when: ssh_key_status.stat.exists
 
 - name: ensure /usr/local/bin exists
   file:
     path: /usr/local/bin
     state: directory
+  when: ssh_key_status.stat.exists
 
 - name: optionally restore from remote backup
   args:
@@ -24,7 +49,7 @@
     rsync -av --update --exclude-from="{{ ansible_env.HOME }}/.rsync-ignore" -e "ssh $SSH_OPTS" \
         {{ backup_dest_user }}@{{ backup_dest_host }}:{{ backup_dest_path }}/ \
         {{ ansible_env.HOME }}/
-  when: restore_on_first_run
+  when: restore_on_first_run and ssh_key_status.stat.exists
   become: yes
   become_user: "{{ non_root_user }}"
 
@@ -34,6 +59,7 @@
     dest: /usr/local/bin/rsync-backup.sh
     mode: '0755'
   become: yes
+  when: ssh_key_status.stat.exists
 
 - name: schedule daily cron job
   cron:
@@ -41,7 +67,7 @@
     hour: "{{ cron_hour }}"
     minute: "{{ cron_minute }}"
     job: "/usr/local/bin/rsync-backup.sh"
-  when: schedule_cron
+  when: schedule_cron and ssh_key_status.stat.exists
   become: yes
   become_user: "{{ non_root_user }}"
   when: non_root_user is defined

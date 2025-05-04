@@ -121,6 +121,7 @@
         - .config/Code - Insiders/User/settings.json
         - .config/Code/User/settings.json
         - .gitconfig
+        - .rsync-ignore
 
 - hosts: laptop
   become: yes
