@@ -1,3 +1,13 @@
+- name: Prompt user to create a VPN route
+  pause:
+    prompt: "Do you want to create a VPN route to {{ route_ip }}? [y/N]"
+  register: vpn_route_answer
+
+- name: Pause to ensure VPN network interface exists
+  pause:
+    prompt: "Make sure the VPN network interface: {{ interface_name }} exists and then press enter"
+  when: vpn_route_answer.user_input | lower == 'y'
+
 - name: Ensure VPN connection never uses default route
   become: yes
   shell: |
@@ -9,6 +19,7 @@
     fi
   register: never_default
   changed_when: "'Already set' not in never_default.stdout"
+  when: vpn_route_answer.user_input | lower == 'y'
 
 - name: Ensure VPN connection is set to autoconnect
   become: yes
@@ -21,6 +32,7 @@
     fi
   register: autoconnect
   changed_when: "'Already set' not in autoconnect.stdout"
+  when: vpn_route_answer.user_input | lower == 'y'
 
 - name: Bring up VPN connection immediately if not active
   become: yes
@@ -33,13 +45,15 @@
   register: vpn_up
   changed_when: "'Already up' not in vpn_up.stdout"
   ignore_errors: yes
+  when: vpn_route_answer.user_input | lower == 'y'
 
 - name: Deploy VPN route dispatcher script
   template:
     src: dispatcher-script.j2
     dest: "/etc/NetworkManager/dispatcher.d/99-{{ interface_name | lower }}-vpn-route"
-    mode: '0755'
+    mode: "0755"
   become: yes
+  when: vpn_route_answer.user_input | lower == 'y'
 
 - name: Update /etc/hosts to map "ssh.earth" to {{ route_ip }}
   become: yes
@@ -48,3 +62,4 @@
     regexp: '.*\bssh\.earth\b.*'
     line: "{{ route_ip }} ssh.earth"
     state: present
+  when: vpn_route_answer.user_input | lower == 'y'
