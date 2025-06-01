@@ -43,7 +43,66 @@
         update_cache: yes
         cache_valid_time: 3600
   roles:
+    - role: 1password
+      non_root_user: "{{ lookup('env', 'USER') }}"
+    - role: syncthing
+      non_root_user: "{{ lookup('env', 'USER') }}"
+
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - role: petermosmans.customize-gnome
+  vars:
+    gnome_dconf:
+      - key: /org/gnome/desktop/background/show-desktop-icons
+        value: "false"
+      - key: /org/gnome/shell/favorite-apps
+        value: "['firefox_firefox.desktop', 'code_code.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Settings.desktop']"
+    gnome_extensions:
+      # https://extensions.gnome.org/extension/7174/nordvpn-quick-toggle/
+      - id: 7174
+        enable: yes
+    gnome_user: "{{ lookup('env', 'USER') }}"
+    customize_gnome__skip_restart_gnome_shell: true
+
+- hosts: all
+  become: no
+  roles:
+    - role: powerline-fonts
+      nvm_user: "{{ lookup('env', 'USER') }}"
+    - role: gnome-settings
+      my_user: "{{ lookup('env', 'USER') }}"
+    - role: geerlingguy.dotfiles
+      dotfiles_repo: "git@github.com:HermannBjorgvin/dotfiles.git"
+      dotfiles_repo_version: master
+      dotfiles_repo_accept_hostkey: false
+      dotfiles_repo_local_destination: "~/.dotfiles"
+      dotfiles_home: "~"
+      dotfiles_files:
+        - .config/Code - Insiders/User/keybindings.json
+        - .config/Code - Insiders/User/settings.json
+        - .config/Code/User/settings.json
+        - .gitconfig
+        - .rsync-ignore
+        - .face
+    - role: rsync
+      non_root_user: "{{ lookup('env', 'USER') }}"
+      backup_dest_user: backups
+      backup_dest_host: ssh.earth
+      backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
+      cron_hour: "23"
+      cron_minute: "30"
+      restore_on_first_run: false
+
+- hosts: laptop
+  become: yes
+  roles:
     - geerlingguy.docker
+    - nordvpn
+    - role: home-vpn-route
+      route_ip: "192.168.2.145"
+      interface_name: "Home"
     - role: viasite-ansible.zsh
       zsh_antigen_bundles_extras:
         - nvm
@@ -81,66 +140,4 @@
         - adpyke.codesnap
         - gwicksted.paste-escaped
         - ms-python.python
-    - role: 1password
-      non_root_user: "{{ lookup('env', 'USER') }}"
-    - role: syncthing
-      non_root_user: "{{ lookup('env', 'USER') }}"
-
-- hosts: all
-  become: yes
-  become_method: sudo
-  roles:
-    - role: petermosmans.customize-gnome
-  vars:
-    gnome_dconf:
-      - key: /org/gnome/desktop/background/show-desktop-icons
-        value: "false"
-      - key: /org/gnome/shell/favorite-apps
-        value: "['firefox_firefox.desktop', 'code_code.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.Settings.desktop']"
-    gnome_extensions:
-      # https://extensions.gnome.org/extension/7174/nordvpn-quick-toggle/
-      - id: 7174
-        enable: yes
-    gnome_user: "{{ lookup('env', 'USER') }}"
-    customize_gnome__skip_restart_gnome_shell: true
-
-- hosts: all
-  become: no
-  roles:
-    - role: powerline-fonts
     - role: morgangraphics.nvm
-      nvm_user: "{{ lookup('env', 'USER') }}"
-    - role: gnome-settings
-      my_user: "{{ lookup('env', 'USER') }}"
-    - role: geerlingguy.dotfiles
-      dotfiles_repo: "git@github.com:HermannBjorgvin/dotfiles.git"
-      dotfiles_repo_version: master
-      dotfiles_repo_accept_hostkey: false
-      dotfiles_repo_local_destination: "~/.dotfiles"
-      dotfiles_home: "~"
-      dotfiles_files:
-        - .config/Code - Insiders/User/keybindings.json
-        - .config/Code - Insiders/User/settings.json
-        - .config/Code/User/settings.json
-        - .gitconfig
-        - .rsync-ignore
-        - .face
-
-- hosts: laptop
-  become: yes
-  roles:
-    - nordvpn
-    - role: home-vpn-route
-      route_ip: "192.168.2.145"
-      interface_name: "Home"
-
-- hosts: laptop
-  become: no
-  roles:
-    - role: rsync
-      non_root_user: "{{ lookup('env', 'USER') }}"
-      backup_dest_user: backups
-      backup_dest_host: ssh.earth
-      backup_dest_path: "/srv/Backups/{{ inventory_hostname }}"
-      cron_hour: "23"
-      cron_minute: "30"
