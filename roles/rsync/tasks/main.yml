@@ -32,6 +32,7 @@
       - rsync
     state: present
   when: ssh_key_status.stat.exists
+  become: yes
 
 - name: ensure /usr/local/bin exists
   file:
