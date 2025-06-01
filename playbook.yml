@@ -124,6 +124,7 @@
         - .config/Code/User/settings.json
         - .gitconfig
         - .rsync-ignore
+        - .face
 
 - hosts: laptop
   become: yes
