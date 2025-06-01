@@ -62,6 +62,19 @@ Below are some of my goals and thoughts on this project, **feel free to totally 
 - Dotfiles setup for sharing configurations between machines
 - Backup and share files between machines (Rsync and Syncthing)
 
+## Syncthing
+
+This playbook now includes a role to install and configure [Syncthing](https://syncthing.net/) on Ubuntu. It will:
+
+- Install Syncthing from the official repository
+- Ensure the Syncthing service is enabled and started for your user
+
+You can add or manage Syncthing folders and devices via the Syncthing web UI after the playbook runs. My personal setup is just the default ~/Sync folder from Syncthing. I don't like the idea of having my entire home directoyr Synced with Syncthing but I like being able to share files easily.
+
+It does not:
+
+- Automate authentication
+
 ## Todo
 
 - Add role to download and configure fonts, current role is not idempotent
